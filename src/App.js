@@ -12,7 +12,7 @@ export default function App() {
   const [count, setCount] = useState(11);
   const [data, setData] = useState([]);
   const [isBusy, setBusy] = useState(true)
-  const nexturl = `https://pokeapi.co/api/v2/pokemon/${count}/`;
+  const nexturl = `https://pokeapi.co/api/v2/pokemon?limit=${count}&offset=0/`;
   const firstLoad = [];
   let firstClick = true;
 
@@ -38,11 +38,14 @@ export default function App() {
   }
 
   async function loadMorePokemon() {
-    const nextPokemonUrl = await fetch(nexturl);
-    const json = await nextPokemonUrl.json();
-    firstLoad.push({ name: json.name });
+    // const nextPokemonUrl = await fetch(nexturl);
+    // const json = await nextPokemonUrl.json();
+    // firstLoad.push({ name: json.name });
+    const response = await fetch(nexturl);
+    const json = await response.json();
+    setData(json.results);
+    console.log(data)
   }
-
 
 
   useEffect(() => {
@@ -52,9 +55,8 @@ export default function App() {
       const json = await response.json();
       setData(json.results);
     }
-    fetchData()
+    fetchData();
   }, [])
-
 
 
   const PokemonList = () => {
@@ -73,6 +75,7 @@ export default function App() {
       {isBusy ? (
         <h1>Nichts geladen</h1>
       ) : (
+        
         <div>
           <PokemonList />
           <button onClick={handeClick}>Load More</button>
